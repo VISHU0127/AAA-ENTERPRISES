@@ -379,3 +379,21 @@ if (location.hash) {
   // untranslated but fully usable. Fresh visitors load it lazily on open.
   if (current !== 'en') loadGoogleTranslate();
 })();
+
+/* -------------------------------------------------------------------------
+    4. Homepage hero video autoplay
+    - Modern browsers may block autoplay even for muted videos until the user
+      interacts with the page. We attempt play() and silently swallow the
+      rejection so the controls remain usable.
+    ------------------------------------------------------------------------- */
+(function initHeroVideo() {
+  const video = document.querySelector('.promo-video');
+  if (!video) return;
+  const attempt = () => {
+    video.play().catch(() => {});
+  };
+  attempt();
+  document.addEventListener('click', attempt, { once: true });
+  document.addEventListener('touchstart', attempt, { once: true });
+  document.addEventListener('keydown', attempt, { once: true });
+})();

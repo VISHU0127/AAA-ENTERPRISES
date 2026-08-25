@@ -9,7 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=23">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="styles.css?v=24">
   <script>(function(){try{var m=document.cookie.match(/(?:^|;\s*)googtrans=\/en\/([^;]+)/),l=(sessionStorage.getItem('aaa_site_lang'))||(m&&m[1]);if(l&&l!=='en'){var d=new Date();d.setTime(d.getTime()+86400000);document.cookie='googtrans=/en/'+l+'; expires='+d.toUTCString()+'; path=/';}}catch(e){}})();</script>
 </head>
   <body>
@@ -97,7 +98,7 @@
           <div class="visual-card card-origin">
             <span class="mini-dot"></span><div>
               <b>Origin</b>
-              <small>Maharashtra · India</small>
+              <small>India</small>
             </div>
           </div>
           <div class="visual-card card-destination">
@@ -146,8 +147,8 @@
               INDIA SOURCING MAP
             </div>
             <h2>
-              Rooted in Maharashtra&#x27;s
-              <em>farming belts.</em>
+              Rooted in India&#x27;s
+              <em>farming regions.</em>
             </h2>
             <p>
               We source from specific Indian regions where we have genuine, working sourcing capability — linking each origin directly to the product it is known for.
@@ -176,48 +177,9 @@
             </ul>
             <a class="btn btn-outline" href="products.html">Explore sourced products <span>↗</span></a>
           </div>
-                    <div class="map-card">
-            <svg class="india-map" viewBox="0 0 520 600" role="img" aria-label="Illustrated map of India showing AAA Internationals sourcing regions in Maharashtra and Madhya Pradesh">
-              <rect width="520" height="600" fill="#eef2ee"/>
-              <g class="land">
-                <path d="M175,55 L215,66 L270,58 L320,60 L370,72 L425,100 L445,140 L432,190 L420,235 L405,300 L388,360 L365,420 L340,500 L322,520 L312,475 L300,410 L282,345 L258,290 L232,248 L195,225 L150,205 L108,182 L122,148 L150,118 L168,82 Z" fill="#cdd9cf" stroke="#9bb3a3" stroke-width="2" stroke-linejoin="round"/>
-              </g>
-              <g stroke="#BF9A59" stroke-width="1.4" opacity="0.55" stroke-dasharray="4 4" fill="none">
-                <path d="M279,295 L252,298"/>
-                <path d="M279,295 L262,270"/>
-                <path d="M279,295 L288,322"/>
-                <path d="M279,295 L315,292"/>
-              </g>
-              <g class="markers">
-                <a href="nashik-red-onion.html">
-                  <title>Nashik — Nashik Red Onion</title>
-                  <circle class="pulse" cx="252" cy="298" r="6"/>
-                  <circle class="mk" cx="252" cy="298" r="6"/>
-                </a>
-                <a href="g9-grade-a-banana.html">
-                  <title>Jalgaon — G9 Grade A Banana</title>
-                  <circle class="pulse" cx="262" cy="270" r="6"/>
-                  <circle class="mk" cx="262" cy="270" r="6"/>
-                </a>
-                <a href="pomegranate.html">
-                  <title>Solapur — Bhagwa Pomegranate</title>
-                  <circle class="pulse" cx="288" cy="322" r="6"/>
-                  <circle class="mk" cx="288" cy="322" r="6"/>
-                </a>
-                <a href="products.html">
-                  <title>Maharashtra &amp; Madhya Pradesh — White Chia Seeds</title>
-                  <circle class="pulse" cx="315" cy="292" r="6"/>
-                  <circle class="mk" cx="315" cy="292" r="6"/>
-                </a>
-              </g>
-              <g class="map-label" text-anchor="middle">
-                <text x="252" y="284">Nashik</text>
-                <text x="262" y="256">Jalgaon</text>
-                <text x="288" y="340">Solapur</text>
-              </g>
-              <text class="map-label" x="332" y="288" text-anchor="start">M.P. · Chia</text>
-              <text class="map-title" x="300" y="548" text-anchor="middle">INDIA</text>
-            </svg>
+                     <div class="map-card">
+            <div id="sourcing-map" class="sourcing-map">
+            </div>
           </div>
         </div>
       </section>
@@ -375,10 +337,11 @@
             Products
           </h4>
           <a href="products.html">Nashik Red Onion</a>
-          <a href="products.html">G9 Banana</a>
+          <a href="products.html">G9 Grade A Banana</a>
           <a href="products.html">Pomegranate</a>
-          <a href="products.html">Green Chilli</a>
-          <a href="products.html">Chia &amp; Turmeric</a>
+          <a href="products.html">G4 Green Chilli</a>
+          <a href="products.html">Fresh Ginger</a>
+          <a href="products.html">Seeds &amp; Spices</a>
         </div>
         <div>
           <h4>
@@ -402,10 +365,41 @@
         © 2026 AAA Internationals. All Rights Reserved.
         <span>
         </span>
-        Export · Import, Rooted in Quality
+        India → International Markets
       </div>
     </footer>
     <script src="script.js?v=19">
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+    <script>
+      (function () {
+        var el = document.getElementById('sourcing-map');
+        if (!el || typeof L === 'undefined') return;
+        var map = L.map(el, { scrollWheelZoom: false, worldCopyJump: true })
+                  .setView([21.0, 78.0], 5);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd', maxZoom: 19
+        }).addTo(map);
+        var origins = [
+          { name: 'Nashik', coord: [19.997, 73.789], product: 'Nashik Red Onion', href: 'nashik-red-onion.html' },
+          { name: 'Jalgaon', coord: [21.049, 75.531], product: 'G9 Grade A Banana', href: 'g9-grade-a-banana.html' },
+          { name: 'Solapur', coord: [17.659, 75.906], product: 'Bhagwa Pomegranate', href: 'pomegranate.html' },
+          { name: 'M.P.', coord: [22.973, 78.656], product: 'White Chia Seeds', href: 'products.html' },
+          { name: 'M.P.', coord: [23.45, 78.25], product: 'Black Chia Seeds', href: 'black-chia-seeds.html' },
+          { name: 'Guntur', coord: [16.30, 80.45], product: 'G4 Green Chilli', href: 'g4-green-chilli.html' },
+          { name: 'M.P.', coord: [23.20, 77.40], product: 'Fresh Ginger Grade A', href: 'fresh-ginger-grade-a.html' },
+          { name: 'Nizamabad', coord: [18.68, 78.10], product: 'Turmeric Whole', href: 'turmeric-whole.html' },
+          { name: 'Nizamabad', coord: [19.10, 78.95], product: 'Turmeric Powder', href: 'turmeric-powder.html' }
+        ];
+        origins.forEach(function (o) {
+          L.circleMarker(o.coord, { radius: 7, color: '#163b2b', weight: 2, fillColor: '#BF9A59', fillOpacity: 1 })
+            .addTo(map)
+            .bindPopup('<b>' + o.name + '</b><br>' + o.product);
+        });
+        setTimeout(function () { map.invalidateSize(); }, 250);
+      })();
     </script>
   </body>
 </html>
